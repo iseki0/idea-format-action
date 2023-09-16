@@ -23,9 +23,9 @@ runs:
       if: steps.cache-idea.outputs.cache-hit != 'true'
       run: |
         mkdir ~/idea
-        curl {{ inputs.idea-download-url }} --output - | tar -xvz -C {{ inputs.idea-path }} --strip-components=1
+        curl ${{ inputs.idea-download-url }} --output - | tar -xvz -C ${{ inputs.idea-path }} --strip-components=1
     - name: Reformat code
       shell: bash
       run: |
-        {{ inputs.idea-path }}/bin/format.sh -r .
+        ${{ inputs.idea-path }}/bin/format.sh -r .
 
