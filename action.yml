@@ -1,0 +1,31 @@
+name: 'IDEA code format'
+description: ''
+inputs:
+  idea-download-url:
+    description: Download URL of IDEA
+    required: false
+    default: 'https://download-cdn.jetbrains.com/idea/ideaIC-2023.2.2.tar.gz'
+  idea-path:
+    required: false
+    default: '~/idea'
+    description: ''
+runs:
+  using: composite
+  steps:
+    - name: Caching for IDEA
+      id: cache-idea
+      uses: actions/cache@v3
+      with:
+        path: ${{ inputs.idea-path }}
+        key: ${{ runner.os }}-idea-${{ inputs.idea-download-url }}
+    - name: Download IDEA
+      shell: bash
+      if: steps.cache-idea.outputs.cache-hit != 'true'
+      run: |
+        mkdir ~/idea
+        curl {{ inputs.idea-download-url }} --output - | tar -xvz -C {{ inputs.idea-path }} --strip-components=1
+    - name: Reformat code
+      shell: bash
+      run: |
+        {{ inputs.idea-path }}/bin/format.sh -r .
+
